@@ -19,6 +19,9 @@ urls.append('http://radiofrance-podcast.net/podcast09/rss_16274.xml')
 urls.append('http://radiofrance-podcast.net/podcast09/rss_11921.xml')
 urls.append('http://www.rtl.fr/podcast/100-live.xml')
 urls.append('http://radiofrance-podcast.net/podcast09/rss_10192.xml')
+urls.append('http://radiofrance-podcast.net/podcast09/rss_10078.xml')
+urls.append('http://radiofrance-podcast.net/podcast09/rss_10177.xml')
+urls.append('http://radiofrance-podcast.net/podcast09/rss_12360.xml')
 
 url='http://radiofrance-podcast.net/podcast09/rss_10192.xml'
 #----------------------------------------------------------------
@@ -41,7 +44,8 @@ def documentInfo(url) :
 #----------------------------------------------------------------
 def documentsInfo() :
   for i in range(0,len(urls)) :
-    print(str(i) + " - " + documentInfo(urls[i]))
+    #print(str(i) + " - " + documentInfo(urls[i]) + ' ' + urls[i])
+    print("{:3} {:<60.60} {}".format(str(i),documentInfo(urls[i]),urls[i]))
   
 #----------------------------------------------------------------
 prefix='podcast'
@@ -87,7 +91,7 @@ for el in tree.iter(tag='item'):
   #text=re.sub('^|!|:|\s+|,|\.|\(|\)|\'|\\\\|/','_',text)
   #text=re.sub('_{2,}','',text)
   file=prefix + '_' + sPart + '.mp3'
-  print '{:120.120} wget -O {:s} {:s}'.format(text, file, mp3 )
+  print '{:<120.120} wget -O {:s} {:s}'.format(text, file, mp3 )
   if download :
     cmd='/usr/bin/wget -O ' + file + ' ' + mp3
     print(cmd)
