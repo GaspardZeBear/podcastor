@@ -22,6 +22,8 @@ urls.append('http://radiofrance-podcast.net/podcast09/rss_10192.xml')
 urls.append('http://radiofrance-podcast.net/podcast09/rss_10078.xml')
 urls.append('http://radiofrance-podcast.net/podcast09/rss_10177.xml')
 urls.append('http://radiofrance-podcast.net/podcast09/rss_12360.xml')
+urls.append('http://radiofrance-podcast.net/podcast09/rss_13937.xml')
+urls.append('http://radiofrance-podcast.net/podcast09/rss_16173.xml')
 
 url='http://radiofrance-podcast.net/podcast09/rss_10192.xml'
 #----------------------------------------------------------------
