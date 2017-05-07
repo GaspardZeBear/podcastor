@@ -26,7 +26,6 @@ urls.append('http://radiofrance-podcast.net/podcast09/rss_12360.xml')
 urls.append('http://radiofrance-podcast.net/podcast09/rss_13937.xml')
 urls.append('http://radiofrance-podcast.net/podcast09/rss_16173.xml')
 
-url='http://radiofrance-podcast.net/podcast09/rss_10192.xml'
 #----------------------------------------------------------------
 def getNum(text) :
   part=re.search('\(\d+/\d+\)',text)
@@ -49,7 +48,24 @@ def documentsInfo() :
   for i in range(0,len(urls)) :
     #print(str(i) + " - " + documentInfo(urls[i]) + ' ' + urls[i])
     print("{:3} {:<60.60} {}".format(str(i),documentInfo(urls[i]),urls[i]))
-    
+
+#----------------------------------------------------------------
+def fList(args=None) :
+  documentsInfo()
+  sys.exit()  
+
+#----------------------------------------------------------------
+def fScan(args) :
+  url=urls[int(args.item)]
+  filter='.*'
+  if args.filter :
+    filter=args.filter[0]
+  prefix='podcast'
+  if args.prefix :
+    prefix=args.prefix[0]
+  rss(url,filter,prefix,args.download)
+  sys.exit()  
+  
 #----------------------------------------------------------------
 def rss(url,filter,prefix,download) :
   print 'rss : {} {} {} {}'.format(url,filter,prefix,download)
@@ -87,27 +103,19 @@ def rss(url,filter,prefix,download) :
 prefix='podcast'
 filter='.*'
 parser = argparse.ArgumentParser()
-parser.add_argument('action',nargs='?',default='list',help="action : list, scan")
-parser.add_argument('item',nargs='?',help="item to scan (given by list)")
-parser.add_argument('--filter',nargs=1,help="filter for scan")
-parser.add_argument('--prefix',nargs=1,help="prefix for filename")
-parser.add_argument('--download',help="download",action="store_true")
+
+subparsers = parser.add_subparsers(help='sub-command help')
+
+parserList = subparsers.add_parser('list', help='a help')
+parserList.set_defaults(func=fList)
+
+parserScan = subparsers.add_parser('scan', help='a help')
+parserScan.set_defaults(func=fScan)
+parserScan.add_argument('item',nargs='?',help="item to scan (given by list)")
+parserScan.add_argument('--filter',nargs=1,help="filter for scan")
+parserScan.add_argument('--prefix',nargs=1,help="prefix for filename")
+parserScan.add_argument('--download',help="download",action="store_true")
+
 args=parser.parse_args()
-print(args.action)
-
-if args.action == 'list' :
-  documentsInfo()
-  sys.exit()
-  
-if args.action == 'scan' :
-  url=urls[int(args.item)]
-  filter='.*'
-  if args.filter :
-    filter=args.filter[0]
-  prefix='podcast'
-  if args.prefix :
-    prefix=args.prefix[0]
-  rss(url,filter,prefix,args.download)
-
-    
-
+print(args)
+args.func(args)
