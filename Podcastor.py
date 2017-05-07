@@ -7,31 +7,30 @@ import sys
 import os
 import argparse
 
-urls=list()
-urls.append('http://radiofrance-podcast.net/podcast09/rss_15537.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_10351.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_14486.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_11495.xml')
-urls.append('http://cdn1-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/qui-vive.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_14007.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_11475.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_10467.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_16274.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_11921.xml')
-urls.append('http://www.rtl.fr/podcast/100-live.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_10192.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_10078.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_10177.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_12360.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_13937.xml')
-urls.append('http://radiofrance-podcast.net/podcast09/rss_16173.xml')
+urls=['http://radiofrance-podcast.net/podcast09/rss_15537.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_10351.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_14486.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_11495.xml',
+      'http://cdn1-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/qui-vive.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_14007.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_11475.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_10467.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_16274.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_11921.xml',
+      'http://www.rtl.fr/podcast/100-live.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_10192.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_10078.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_10177.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_12360.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_13937.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_16173.xml',
+      ]
 
 #----------------------------------------------------------------
 def getNum(text) :
   part=re.search('\(\d+/\d+\)',text)
   if part is None :
     part=re.search('\d+/\d+',text)
-  #print part
   return part
 
 #----------------------------------------------------------------
@@ -50,25 +49,7 @@ def documentsInfo() :
     print("{:3} {:<60.60} {}".format(str(i),documentInfo(urls[i]),urls[i]))
 
 #----------------------------------------------------------------
-def fList(args=None) :
-  documentsInfo()
-  sys.exit()  
-
-#----------------------------------------------------------------
-def fScan(args) :
-  url=urls[int(args.item)]
-  filter='.*'
-  if args.filter :
-    filter=args.filter[0]
-  prefix='podcast'
-  if args.prefix :
-    prefix=args.prefix[0]
-  rss(url,filter,prefix,args.download)
-  sys.exit()  
-  
-#----------------------------------------------------------------
 def rss(url,filter,prefix,download) :
-  print 'rss : {} {} {} {}'.format(url,filter,prefix,download)
   tree = ET.ElementTree(file=urllib2.urlopen(url))
   root=tree.getroot()
   count=0
@@ -78,7 +59,6 @@ def rss(url,filter,prefix,download) :
     mp3=el.find('enclosure').attrib['url']
     if re.search(filter,text) is None :
       continue
-    #part=re.search('\(\d+/\d+\)',text)
     part=getNum(text)
     sPart=str(count)
     if part :
@@ -88,22 +68,30 @@ def rss(url,filter,prefix,download) :
       sPart=re.sub('/','-',sPart)
     else :
       count += 1
-  #text=re.sub('^|!|:|\s+|,|\.|\(|\)|\'|\\\\|/','_',text)
-  #text=re.sub('_{2,}','',text)
     file=prefix + '_' + sPart + '.mp3'
     print '{:<120.120} wget -O {:s} {:s}'.format(text, file, mp3 )
     if download :
       cmd='/usr/bin/wget -O ' + file + ' ' + mp3
       print(cmd)
-      os.system(cmd)
+      os.system("nohup " + cmd + "&")
 
-#wget -O candre-5-5.mp3 http://rf.proxycast.org/1285229558848561153/10351-07.04.2017-ITEMA_21284754-0.mp3  
+#----------------------------------------------------------------
+def fList(args=None) :
+  documentsInfo()
   
 #----------------------------------------------------------------
-prefix='podcast'
-filter='.*'
+def fScan(args) :
+  url=urls[int(args.item)]
+  filter='.*'
+  if args.filter :
+    filter=args.filter[0]
+  prefix='podcast'
+  if args.prefix :
+    prefix=args.prefix[0]
+  rss(url,filter,prefix,args.download) 
+  
+#----------------------------------------------------------------
 parser = argparse.ArgumentParser()
-
 subparsers = parser.add_subparsers(help='sub-command help')
 
 parserList = subparsers.add_parser('list', help='a help')
@@ -117,5 +105,4 @@ parserScan.add_argument('--prefix',nargs=1,help="prefix for filename")
 parserScan.add_argument('--download',help="download",action="store_true")
 
 args=parser.parse_args()
-print(args)
 args.func(args)
