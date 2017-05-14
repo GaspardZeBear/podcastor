@@ -24,6 +24,10 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_15537.xml',
       'http://radiofrance-podcast.net/podcast09/rss_12360.xml',
       'http://radiofrance-podcast.net/podcast09/rss_13937.xml',
       'http://radiofrance-podcast.net/podcast09/rss_16173.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_13397.xml',
+      'http://www.bbc.co.uk/programmes/p02pc9zn/episodes/downloads.rss',
+      'http://www.bbc.co.uk/programmes/b006qy05/episodes/downloads.rss',
+      'http://radiofrance-podcast.net/podcast09/rss_13915.xml'
       ]
 
 #----------------------------------------------------------------
@@ -69,7 +73,7 @@ def rss(url,filter,prefix,download) :
     else :
       count += 1
     file=prefix + '_' + sPart + '.mp3'
-    print '{:<120.120} wget -O {:s} {:s}'.format(text, file, mp3 )
+    print '{:<100.100} wget -O {:s} {:s}'.format(text, file, mp3 )
     if download :
       cmd='/usr/bin/wget -O ' + file + ' ' + mp3
       print(cmd)
@@ -100,8 +104,8 @@ parserList.set_defaults(func=fList)
 parserScan = subparsers.add_parser('scan', help='a help')
 parserScan.set_defaults(func=fScan)
 parserScan.add_argument('item',nargs='?',help="item to scan (given by list)")
-parserScan.add_argument('--filter',nargs=1,help="filter for scan")
-parserScan.add_argument('--prefix',nargs=1,help="prefix for filename")
+parserScan.add_argument('--filter','-f',nargs=1,help="filter for scan")
+parserScan.add_argument('--prefix','-p',nargs=1,help="prefix for filename")
 parserScan.add_argument('--download',help="download",action="store_true")
 
 args=parser.parse_args()
