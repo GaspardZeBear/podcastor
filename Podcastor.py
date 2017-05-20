@@ -15,7 +15,6 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_15537.xml',
       'http://radiofrance-podcast.net/podcast09/rss_14007.xml',
       'http://radiofrance-podcast.net/podcast09/rss_11475.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10467.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_16274.xml',
       'http://radiofrance-podcast.net/podcast09/rss_11921.xml',
       'http://www.rtl.fr/podcast/100-live.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10192.xml',
@@ -41,12 +40,21 @@ def getNum(text) :
 
 #----------------------------------------------------------------
 def documentInfo(url) :
-    tree = ET.ElementTree(file=urllib2.urlopen(url))
+    #tree = ET.ElementTree(file=urllib2.urlopen(url))
+    tree = ET.ElementTree(file=open(cached(url2file(url))))
     root=tree.getroot()
     el=tree.iter(tag='channel').next()
     title=el.find('title').text.encode('utf-8')
     link=el.find('link').text.encode('utf-8')
     return( title + ':' + link)
+
+#----------------------------------------------------------------
+def url2file(url) :
+    file=url
+    #file=re.sub(':','_',url)
+    file=re.sub('\/','@',file)
+    return(file)
+
 
 #----------------------------------------------------------------
 def documentsInfo() :
@@ -55,8 +63,23 @@ def documentsInfo() :
     print("{:3} {:<60.60} {}".format(str(i),documentInfo(urls[i]),urls[i]))
 
 #----------------------------------------------------------------
+def cached(file) :
+    return("cache/" + file)
+    
+
+#----------------------------------------------------------------
+def documentsCache() :
+  for i in range(0,len(urls)) :
+    file=urllib2.urlopen(urls[i])
+    print("Caching file " + urls[i] + " " + str(i) + "/" + str(len(urls)))
+    out=open(cached(url2file(urls[i])),'w')
+    out.write(file.read())
+    out.close()
+
+#----------------------------------------------------------------
 def rss(url,filter,prefix,download) :
-  tree = ET.ElementTree(file=urllib2.urlopen(url))
+  #tree = ET.ElementTree(file=urllib2.urlopen(url))
+  tree = ET.ElementTree(file=open(cached(url2file(url))))
   root=tree.getroot()
   count=0
   print(documentInfo(url))
@@ -84,6 +107,10 @@ def rss(url,filter,prefix,download) :
 #----------------------------------------------------------------
 def fList(args=None) :
   documentsInfo()
+
+#----------------------------------------------------------------
+def fCache(args=None) :
+  documentsCache()
   
 #----------------------------------------------------------------
 def fScan(args) :
@@ -102,6 +129,9 @@ subparsers = parser.add_subparsers(help='sub-command help')
 
 parserList = subparsers.add_parser('list', help='a help')
 parserList.set_defaults(func=fList)
+
+parserCache = subparsers.add_parser('cache', help='a help')
+parserCache.set_defaults(func=fCache)
 
 parserScan = subparsers.add_parser('scan', help='a help')
 parserScan.set_defaults(func=fScan)
