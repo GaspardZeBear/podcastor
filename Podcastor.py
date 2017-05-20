@@ -68,13 +68,17 @@ def cached(file) :
     
 
 #----------------------------------------------------------------
+def documentCache(url) :
+  file=urllib2.urlopen(url)
+  print("Caching file " + url)
+  with open(cached(url2file(url)),'w') as out : 
+    out.write(file.read())
+
+#----------------------------------------------------------------
 def documentsCache() :
   for i in range(0,len(urls)) :
-    file=urllib2.urlopen(urls[i])
-    print("Caching file " + urls[i] + " " + str(i) + "/" + str(len(urls)))
-    out=open(cached(url2file(urls[i])),'w')
-    out.write(file.read())
-    out.close()
+    print("Prepare caching file " + urls[i] + " " + str(i) + "/" + str(len(urls)))
+    documentCache(urls[i])
 
 #----------------------------------------------------------------
 def rss(url,filter,prefix,download) :
@@ -110,8 +114,11 @@ def fList(args=None) :
 
 #----------------------------------------------------------------
 def fCache(args=None) :
-  documentsCache()
-  
+  if args.num :
+    documentCache(urls[int(args.num[0])])
+  else :
+    documentsCache()
+   
 #----------------------------------------------------------------
 def fScan(args) :
   url=urls[int(args.item)]
@@ -132,6 +139,7 @@ parserList.set_defaults(func=fList)
 
 parserCache = subparsers.add_parser('cache', help='a help')
 parserCache.set_defaults(func=fCache)
+parserCache.add_argument('--num','-n',nargs=1,help="num of file to cache")
 
 parserScan = subparsers.add_parser('scan', help='a help')
 parserScan.set_defaults(func=fScan)
