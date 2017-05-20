@@ -27,7 +27,9 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_15537.xml',
       'http://radiofrance-podcast.net/podcast09/rss_13397.xml',
       'http://www.bbc.co.uk/programmes/p02pc9zn/episodes/downloads.rss',
       'http://www.bbc.co.uk/programmes/b006qy05/episodes/downloads.rss',
-      'http://radiofrance-podcast.net/podcast09/rss_13915.xml'
+      'http://radiofrance-podcast.net/podcast09/rss_13915.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_13954.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_16274.xml'
       ]
 
 #----------------------------------------------------------------
