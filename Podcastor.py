@@ -28,8 +28,15 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_15537.xml',
       'http://www.bbc.co.uk/programmes/b006qy05/episodes/downloads.rss',
       'http://radiofrance-podcast.net/podcast09/rss_13915.xml',
       'http://radiofrance-podcast.net/podcast09/rss_13954.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_16274.xml'
+      'http://radiofrance-podcast.net/podcast09/rss_16274.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_16173.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_13957.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_10084.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_14312.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_11495.xml'
       ]
+      
+content=[]
 
 #----------------------------------------------------------------
 def getNum(text) :
@@ -102,11 +109,13 @@ def rss(url,filter,prefix,download) :
     else :
       count += 1
     file=prefix + '_' + sPart + '.mp3'
-    print '{:<100.100} wget -O {:s} {:s}'.format(text, file, mp3 )
+    content.append('{:<100.100} wget -O {:s} {:s}'.format(text, file, mp3 ))
     if download :
       cmd='/usr/bin/wget -O ' + file + ' ' + mp3
       print(cmd)
       os.system("nohup " + cmd + "&")
+  for item in reversed(content) :
+    print(item)
 
 #----------------------------------------------------------------
 def fList(args=None) :
@@ -146,7 +155,7 @@ parserScan.set_defaults(func=fScan)
 parserScan.add_argument('item',nargs='?',help="item to scan (given by list)")
 parserScan.add_argument('--filter','-f',nargs=1,help="filter for scan")
 parserScan.add_argument('--prefix','-p',nargs=1,help="prefix for filename")
-parserScan.add_argument('--download',help="download",action="store_true")
+parserScan.add_argument('--download','-d',help="download",action="store_true")
 
 args=parser.parse_args()
 args.func(args)
