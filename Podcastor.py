@@ -33,7 +33,8 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_15537.xml',
       'http://radiofrance-podcast.net/podcast09/rss_13957.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10084.xml',
       'http://radiofrance-podcast.net/podcast09/rss_14312.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_11495.xml'
+      'http://radiofrance-podcast.net/podcast09/rss_11495.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_15892.xml'
       ]
       
 content=[]
@@ -53,7 +54,7 @@ def documentInfo(url) :
     el=tree.iter(tag='channel').next()
     title=el.find('title').text.encode('utf-8')
     link=el.find('link').text.encode('utf-8')
-    return( title + ':' + link)
+    return(title + ':' + link)
 
 #----------------------------------------------------------------
 def url2file(url) :
@@ -66,7 +67,6 @@ def url2file(url) :
 #----------------------------------------------------------------
 def documentsInfo() :
   for i in range(0,len(urls)) :
-    #print(str(i) + " - " + documentInfo(urls[i]) + ' ' + urls[i])
     print("{:3} {:<60.60} {}".format(str(i),documentInfo(urls[i]),urls[i]))
 
 #----------------------------------------------------------------
@@ -96,6 +96,7 @@ def rss(url,filter,prefix,download) :
   print(documentInfo(url))
   for el in tree.iter(tag='item'):
     text=el.find('title').text.encode('utf-8')
+    pubDate=el.find('pubDate').text.encode('utf-8')
     mp3=el.find('enclosure').attrib['url']
     if re.search(filter,text) is None :
       continue
@@ -109,7 +110,7 @@ def rss(url,filter,prefix,download) :
     else :
       count += 1
     file=prefix + '_' + sPart + '.mp3'
-    content.append('{:<100.100} wget -O {:s} {:s}'.format(text, file, mp3 ))
+    content.append('{:<16.16} {:<100.100} wget -O {:s} {:s}'.format(pubDate,text, file, mp3 ))
     if download :
       cmd='/usr/bin/wget -O ' + file + ' ' + mp3
       print(cmd)
@@ -124,7 +125,8 @@ def fList(args=None) :
 #----------------------------------------------------------------
 def fCache(args=None) :
   if args.num :
-    documentCache(urls[int(args.num[0])])
+    for n in args.num.split(',') :
+      documentCache(urls[int(n)])    
   else :
     documentsCache()
    
@@ -148,7 +150,8 @@ parserList.set_defaults(func=fList)
 
 parserCache = subparsers.add_parser('cache', help='a help')
 parserCache.set_defaults(func=fCache)
-parserCache.add_argument('--num','-n',nargs=1,help="num of file to cache")
+parserCache.add_argument('num',nargs='?',help="num of file to cache")
+#parserCache.add_argument('--num','-n',nargs=1,help="num of file to cache")
 
 parserScan = subparsers.add_parser('scan', help='a help')
 parserScan.set_defaults(func=fScan)
