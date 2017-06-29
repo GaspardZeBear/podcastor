@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 import xml.etree.cElementTree as ET
 import urllib2
 import re
@@ -34,9 +33,9 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_15537.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10084.xml',
       'http://radiofrance-podcast.net/podcast09/rss_14312.xml',
       'http://radiofrance-podcast.net/podcast09/rss_11495.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_15892.xml'
+      'http://radiofrance-podcast.net/podcast09/rss_15892.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_10183.xml'
       ]
-      
 content=[]
 
 #----------------------------------------------------------------
@@ -63,17 +62,18 @@ def url2file(url) :
     file=re.sub('\/','@',file)
     return(file)
 
-
 #----------------------------------------------------------------
-def documentsInfo() :
+def documentsInfo(filter) :
   for i in range(0,len(urls)) :
+    text=documentInfo(urls[i])
+    if re.search(filter,text) is None :
+      continue
     print("{:3} {:<60.60} {}".format(str(i),documentInfo(urls[i]),urls[i]))
 
 #----------------------------------------------------------------
 def cached(file) :
     return("cache/" + file)
     
-
 #----------------------------------------------------------------
 def documentCache(url) :
   file=urllib2.urlopen(url)
@@ -83,7 +83,7 @@ def documentCache(url) :
 
 #----------------------------------------------------------------
 def documentsCache() :
-  for i in range(0,len(urls)) :
+  for i in range(1,len(urls)-1) :
     print("Prepare caching file " + urls[i] + " " + str(i) + "/" + str(len(urls)))
     documentCache(urls[i])
 
@@ -114,13 +114,16 @@ def rss(url,filter,prefix,download) :
     if download :
       cmd='/usr/bin/wget -O ' + file + ' ' + mp3
       print(cmd)
-      os.system("nohup " + cmd + "&")
+      os.system("nohup " + cmd + "> /dev/null 2>&1 &")
   for item in reversed(content) :
     print(item)
 
 #----------------------------------------------------------------
 def fList(args=None) :
-  documentsInfo()
+  filter='.*'
+  if args.filter :
+    filter=args.filter[0]
+  documentsInfo(filter)
 
 #----------------------------------------------------------------
 def fCache(args=None) :
@@ -147,11 +150,12 @@ subparsers = parser.add_subparsers(help='sub-command help')
 
 parserList = subparsers.add_parser('list', help='a help')
 parserList.set_defaults(func=fList)
+parserList.add_argument('--filter','-f',nargs=1,help="filter for scan")
+
 
 parserCache = subparsers.add_parser('cache', help='a help')
 parserCache.set_defaults(func=fCache)
 parserCache.add_argument('num',nargs='?',help="num of file to cache")
-#parserCache.add_argument('--num','-n',nargs=1,help="num of file to cache")
 
 parserScan = subparsers.add_parser('scan', help='a help')
 parserScan.set_defaults(func=fScan)
