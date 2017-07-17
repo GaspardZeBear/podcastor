@@ -34,7 +34,14 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_15537.xml',
       'http://radiofrance-podcast.net/podcast09/rss_14312.xml',
       'http://radiofrance-podcast.net/podcast09/rss_11495.xml',
       'http://radiofrance-podcast.net/podcast09/rss_15892.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_10183.xml'
+      'http://radiofrance-podcast.net/podcast09/rss_10183.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_17360.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_17397.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_17395.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_17307.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_17396.xml',
+      'http://podcasts.files.bbci.co.uk/p02pc9zn.rss' ,
+      'http://radiofrance-podcast.net/podcast09/rss_11908.xml'
       ]
 content=[]
 
