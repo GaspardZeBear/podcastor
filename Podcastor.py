@@ -32,7 +32,6 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_15537.xml',
       'http://radiofrance-podcast.net/podcast09/rss_13957.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10084.xml',
       'http://radiofrance-podcast.net/podcast09/rss_14312.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_11495.xml',
       'http://radiofrance-podcast.net/podcast09/rss_15892.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10183.xml',
       'http://radiofrance-podcast.net/podcast09/rss_17360.xml',
@@ -41,7 +40,20 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_15537.xml',
       'http://radiofrance-podcast.net/podcast09/rss_17307.xml',
       'http://radiofrance-podcast.net/podcast09/rss_17396.xml',
       'http://podcasts.files.bbci.co.uk/p02pc9zn.rss' ,
-      'http://radiofrance-podcast.net/podcast09/rss_11908.xml'
+      'http://radiofrance-podcast.net/podcast09/rss_11908.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_14312.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_13835.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_17310.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_17312.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_17417.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_13983.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_17362.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_10175.xml',
+      'http://cdn2-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/mediapolis.xml',
+      'http://cdn-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/lete-sur-les-pages.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_16119.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_12526.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_13983.xml'
       ]
 content=[]
 
@@ -75,6 +87,7 @@ def documentsInfo(filter) :
     text=documentInfo(urls[i])
     if re.search(filter,text) is None :
       continue
+    #print("{:3} {:<60.60} {}".format(str(i),documentInfo(urls[i]),urls[i]))
     print("{:3} {:<60.60} {}".format(str(i),documentInfo(urls[i]),urls[i]))
 
 #----------------------------------------------------------------
@@ -117,7 +130,8 @@ def rss(url,filter,prefix,download) :
     else :
       count += 1
     file=prefix + '_' + sPart + '.mp3'
-    content.append('{:<16.16} {:<100.100} wget -O {:s} {:s}'.format(pubDate,text, file, mp3 ))
+    #content.append('{:<16.16} {:<100.100} wget -O {:s} {:s}'.format(pubDate,text, file, mp3 ))
+    content.append('{:<16.16} {:<100.100} wget -O {:s} {:s}'.format(pubDate,text.decode('utf8').encode('iso-8859-1',errors='replace'), file, mp3 ))
     if download :
       cmd='/usr/bin/wget -O ' + file + ' ' + mp3
       print(cmd)
