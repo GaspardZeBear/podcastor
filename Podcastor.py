@@ -28,7 +28,6 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_15537.xml',
       'http://radiofrance-podcast.net/podcast09/rss_13915.xml',
       'http://radiofrance-podcast.net/podcast09/rss_13954.xml',
       'http://radiofrance-podcast.net/podcast09/rss_16274.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_16173.xml',
       'http://radiofrance-podcast.net/podcast09/rss_13957.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10084.xml',
       'http://radiofrance-podcast.net/podcast09/rss_14312.xml',
@@ -46,14 +45,21 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_15537.xml',
       'http://radiofrance-podcast.net/podcast09/rss_17310.xml',
       'http://radiofrance-podcast.net/podcast09/rss_17312.xml',
       'http://radiofrance-podcast.net/podcast09/rss_17417.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_13983.xml',
       'http://radiofrance-podcast.net/podcast09/rss_17362.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10175.xml',
       'http://cdn2-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/mediapolis.xml',
       'http://cdn-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/lete-sur-les-pages.xml',
       'http://radiofrance-podcast.net/podcast09/rss_16119.xml',
       'http://radiofrance-podcast.net/podcast09/rss_12526.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_13983.xml'
+      'http://radiofrance-podcast.net/podcast09/rss_13983.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_10081.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_13956.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_13939.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_16408.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_18755.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_18723.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_11701.xml',
+      'http://swipeout.libsyn.com/rss'
       ]
 content=[]
 
@@ -113,25 +119,32 @@ def rss(url,filter,prefix,download) :
   tree = ET.ElementTree(file=open(cached(url2file(url))))
   root=tree.getroot()
   count=0
+  for el in tree.iter(tag='item') :
+    text=el.find('title').text.encode('utf-8')
+    if re.search(filter,text) is None :
+      continue
+    count += 1
+  #count=0
   print(documentInfo(url))
-  for el in tree.iter(tag='item'):
+  for el in tree.iter(tag='item') :
     text=el.find('title').text.encode('utf-8')
     pubDate=el.find('pubDate').text.encode('utf-8')
     mp3=el.find('enclosure').attrib['url']
     if re.search(filter,text) is None :
       continue
     part=getNum(text)
-    sPart=str(count)
+    #sPart=str(count)
+    sPart='{:02d}'.format(count)
     if part :
       sPart=part.group()
       sPart=re.sub('\(','',sPart)
       sPart=re.sub('\)','',sPart)
       sPart=re.sub('/','-',sPart)
     else :
-      count += 1
+      count -= 1
     file=prefix + '_' + sPart + '.mp3'
     #content.append('{:<16.16} {:<100.100} wget -O {:s} {:s}'.format(pubDate,text, file, mp3 ))
-    content.append('{:<16.16} {:<100.100} wget -O {:s} {:s}'.format(pubDate,text.decode('utf8').encode('iso-8859-1',errors='replace'), file, mp3 ))
+    content.append('{:<16.16} {:<100.100} wget -O {:s} {:s}'.format(pubDate,text.decode('utf8').encode('utf8',errors='replace'), file, mp3 ))
     if download :
       cmd='/usr/bin/wget -O ' + file + ' ' + mp3
       print(cmd)
