@@ -59,7 +59,9 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_15537.xml',
       'http://radiofrance-podcast.net/podcast09/rss_18755.xml',
       'http://radiofrance-podcast.net/podcast09/rss_18723.xml',
       'http://radiofrance-podcast.net/podcast09/rss_11701.xml',
-      'http://swipeout.libsyn.com/rss'
+      'http://swipeout.libsyn.com/rss',
+      'http://radiofrance-podcast.net/podcast09/rss_13915.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_18148.xml'
       ]
 content=[]
 
