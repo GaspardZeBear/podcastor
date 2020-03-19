@@ -9,11 +9,11 @@ import argparse
 urls=['http://radiofrance-podcast.net/podcast09/rss_10351.xml',
       'http://radiofrance-podcast.net/podcast09/rss_14486.xml',
       'http://radiofrance-podcast.net/podcast09/rss_11495.xml',
-      'http://cdn1-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/qui-vive.xml',
+      #'http://cdn1-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/qui-vive.xml',
       'http://radiofrance-podcast.net/podcast09/rss_14007.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10467.xml',
       'http://radiofrance-podcast.net/podcast09/rss_11921.xml',
-      'http://www.rtl.fr/podcast/100-live.xml',
+      #'http://www.rtl.fr/podcast/100-live.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10078.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10177.xml',
       'http://radiofrance-podcast.net/podcast09/rss_12360.xml',
@@ -29,13 +29,9 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_10351.xml',
       'http://radiofrance-podcast.net/podcast09/rss_14312.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10183.xml',
       'http://radiofrance-podcast.net/podcast09/rss_17360.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_17395.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_17307.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_17396.xml',
-      'http://podcasts.files.bbci.co.uk/p02pc9zn.rss' ,
-      'http://radiofrance-podcast.net/podcast09/rss_17417.xml',
+      #'http://radiofrance-podcast.net/podcast09/rss_17417.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10175.xml',
-      'http://cdn2-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/mediapolis.xml',
+      #'http://cdn2-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/mediapolis.xml',
       'http://radiofrance-podcast.net/podcast09/rss_16119.xml',
       'http://radiofrance-podcast.net/podcast09/rss_13983.xml',
       'http://radiofrance-podcast.net/podcast09/rss_10081.xml',
@@ -45,10 +41,35 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_10351.xml',
       'http://radiofrance-podcast.net/podcast09/rss_18755.xml',
       'http://radiofrance-podcast.net/podcast09/rss_18723.xml',
       'http://radiofrance-podcast.net/podcast09/rss_11701.xml',
-      'http://swipeout.libsyn.com/rss',
       'http://radiofrance-podcast.net/podcast09/rss_13915.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_18148.xml',
-      'http://radiofrance-podcast.net/podcast09/rss_18064.xml'
+       #'http://radiofrance-podcast.net/podcast09/rss_18148.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_18064.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_18918.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_15537.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_10471.xml',
+      #'http://radiofrance-podcast.net/podcast09/rss_12526.xml',
+      #'http://cdn1-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/chapelle-sixties.xml',
+      #'http://radiofrance-podcast.net/podcast09/rss_19056.xml',
+      #'http://radiofrance-podcast.net/podcast09/rss_18938.xml',
+      #'http://podcasts.files.bbci.co.uk/b006qy05.rss',
+      'http://radiofrance-podcast.net/podcast09/rss_13022.xml',
+      #'http://radiofrance-podcast.net/podcast09/rss_10081.xml',
+      #'http://radiofrance-podcast.net/podcast09/rss_19918.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_16538.xml',
+      #'https://www.arteradio.com/xml_sound_emission?emissionname=%22SEX%20AND%20SOUNDS%22',
+      #'https://www.arteradio.com/xml_sound_serie?seriename=%22La%20petite%20g%C3%A2terie%20de%20l%27%C3%A9volution%22',
+      #'https://www.arteradio.com/xml_sound_serie?seriename=%22MON%20PRINCE%20%20VIENDRA%20A%20LA%20MER%22',
+      #'https://www.arteradio.com/xml_sound_serie?seriename=%22CENT%20FA%C3%87ONS%20DE%20DISPARA%C3%8ETRE%22',
+      'http://radiofrance-podcast.net/podcast09/rss_11550.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_16740.xml',
+      'https://www.outilsdumanager.com/feed/podcasts/',
+      'http://radiofrance-podcast.net/podcast09/rss_16274.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_18938.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_20102.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_12440.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_13940.xml',
+      'http://radiofrance-podcast.net/podcast09/rss_18292.xml',
+      'https://radiofrance-podcast.net/podcast09/rss_20015.xml'
       ]
 content=[]
 
@@ -98,8 +119,9 @@ def documentCache(url) :
 
 #----------------------------------------------------------------
 def documentsCache() :
-  for i in range(1,len(urls)-1) :
-    print("Prepare caching file " + urls[i] + " " + str(i) + "/" + str(len(urls)))
+  #for i in range(1,len(urls)-1) :
+  for i in range(0,len(urls)) :
+    print("Prepare caching file " + urls[i] + " " + str(i+1) + "/" + str(len(urls)))
     documentCache(urls[i])
 
 #----------------------------------------------------------------
