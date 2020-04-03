@@ -5,6 +5,7 @@ import re
 import sys
 import os
 import argparse
+import requests
 
 urls=['http://radiofrance-podcast.net/podcast09/rss_10351.xml',
       'http://radiofrance-podcast.net/podcast09/rss_14486.xml',
@@ -69,7 +70,9 @@ urls=['http://radiofrance-podcast.net/podcast09/rss_10351.xml',
       'http://radiofrance-podcast.net/podcast09/rss_12440.xml',
       'http://radiofrance-podcast.net/podcast09/rss_13940.xml',
       'http://radiofrance-podcast.net/podcast09/rss_18292.xml',
-      'https://radiofrance-podcast.net/podcast09/rss_20015.xml'
+      'https://radiofrance-podcast.net/podcast09/rss_20015.xml',
+      'https://feed.podbean.com/dissidentofficiel/feed.xml',
+
       ]
 content=[]
 
@@ -111,11 +114,21 @@ def cached(file) :
     return("cache/" + file)
     
 #----------------------------------------------------------------
-def documentCache(url) :
+def XdocumentCache(url) :
+  print("Loading file " + url)
   file=urllib2.urlopen(url)
   print("Caching file " + url)
   with open(cached(url2file(url)),'w') as out : 
     out.write(file.read())
+    
+#----------------------------------------------------------------
+def documentCache(url) :
+  print("Loading file " + url)
+  r=requests.get(url)
+  print("Caching file " + url)
+  #print(r.content)
+  with open(cached(url2file(url)),'w') as out : 
+    out.write(r.content)
 
 #----------------------------------------------------------------
 def documentsCache() :
