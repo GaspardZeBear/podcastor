@@ -7,77 +7,77 @@ import os
 import argparse
 import requests
 
-urls=[['','http://radiofrance-podcast.net/podcast09/rss_10351.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_14486.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_11495.xml'],
+urls=[['A voix nue','http://radiofrance-podcast.net/podcast09/rss_10351.xml'],
+      ['Vie d\'artiste','http://radiofrance-podcast.net/podcast09/rss_14486.xml'],
+      ['Le feuilleton','http://radiofrance-podcast.net/podcast09/rss_11495.xml'],
       #['','http://cdn1-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/qui-vive.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_14007.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_10467.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_11921.xml'],
+      ['MasquePlume','http://radiofrance-podcast.net/podcast09/rss_14007.xml'],
+      ['CheminPhilo','http://radiofrance-podcast.net/podcast09/rss_10467.xml'],
+      ['College France','http://radiofrance-podcast.net/podcast09/rss_11921.xml'],
       #['','http://www.rtl.fr/podcast/100-live.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_10078.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_10177.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_12360.xml'],
+      ['Pieds sur terre','http://radiofrance-podcast.net/podcast09/rss_10078.xml'],
+      ['Serie doc','http://radiofrance-podcast.net/podcast09/rss_10177.xml'],
+      ['Grande table','http://radiofrance-podcast.net/podcast09/rss_12360.xml'],
       #[ 'boomerang', 'http://radiofrance-podcast.net/podcast09/rss_13937.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_16173.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_13397.xml'],
+      ['Grand bien','http://radiofrance-podcast.net/podcast09/rss_16173.xml'],
+      ['Repliques','http://radiofrance-podcast.net/podcast09/rss_13397.xml'],
       #['','http://www.bbc.co.uk/programmes/p02pc9zn/episodes/downloads.rss'],
       #['','http://www.bbc.co.uk/programmes/b006qy05/episodes/downloads.rss'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_13954.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_16274.xml'],
+      ['Temps qui courent','http://radiofrance-podcast.net/podcast09/rss_13954.xml'],
+      ['Matiere a penser','http://radiofrance-podcast.net/podcast09/rss_16274.xml'],
       #['','http://radiofrance-podcast.net/podcast09/rss_13957.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_10084.xml'],
+      ['Grand reportage','http://radiofrance-podcast.net/podcast09/rss_10084.xml'],
       #['methode scientifique',  'http://radiofrance-podcast.net/podcast09/rss_14312.xml'],
       #['soft power ', 'http://radiofrance-podcast.net/podcast09/rss_10183.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_17360.xml'],
+      ['Masterclasse','http://radiofrance-podcast.net/podcast09/rss_17360.xml'],
       #['','http://radiofrance-podcast.net/podcast09/rss_17417.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_10175.xml'],
+      ['Temps du debat','http://radiofrance-podcast.net/podcast09/rss_10175.xml'],
       #['','http://cdn2-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/mediapolis.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_16119.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_13983.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_10081.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_13956.xml'],
+      ['Esprit public','http://radiofrance-podcast.net/podcast09/rss_16119.xml'],
+      ['Invite matin','http://radiofrance-podcast.net/podcast09/rss_13983.xml'],
+      ['Entendez-vous l\'eco','http://radiofrance-podcast.net/podcast09/rss_10081.xml'],
+      ['Temps ecrivains','http://radiofrance-podcast.net/podcast09/rss_13956.xml'],
       #[ 'bande originale', 'http://radiofrance-podcast.net/podcast09/rss_13939.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_16408.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_18755.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_18723.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_11701.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_13915.xml'],
+      ['Histoire particuliere','http://radiofrance-podcast.net/podcast09/rss_16408.xml'],
+      ['Actu idees','http://radiofrance-podcast.net/podcast09/rss_18755.xml'],
+      ['Culture direct','http://radiofrance-podcast.net/podcast09/rss_18723.xml'],
+      ['Culture monde','http://radiofrance-podcast.net/podcast09/rss_11701.xml'],
+      ['Nuit France culture','http://radiofrance-podcast.net/podcast09/rss_13915.xml'],
        #['','http://radiofrance-podcast.net/podcast09/rss_18148.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_18064.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_18918.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_15537.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_10471.xml'],
+      ['Superfail','http://radiofrance-podcast.net/podcast09/rss_18064.xml'],
+      ['Idees claires','http://radiofrance-podcast.net/podcast09/rss_18918.xml'],
+      ['Compagnie oeuvres','http://radiofrance-podcast.net/podcast09/rss_15537.xml'],
+      ['Toute une vie','http://radiofrance-podcast.net/podcast09/rss_10471.xml'],
       #['','http://radiofrance-podcast.net/podcast09/rss_12526.xml'],
       #['','http://cdn1-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/chapelle-sixties.xml'],
       #['','http://radiofrance-podcast.net/podcast09/rss_19056.xml'],
       #['','http://radiofrance-podcast.net/podcast09/rss_18938.xml'],
       #['','http://podcasts.files.bbci.co.uk/b006qy05.rss'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_13022.xml'],
+      ['Remede melancolie','http://radiofrance-podcast.net/podcast09/rss_13022.xml'],
       #['','http://radiofrance-podcast.net/podcast09/rss_10081.xml'],
       #['','http://radiofrance-podcast.net/podcast09/rss_19918.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_16538.xml'],
+      ['Christophe Andre','http://radiofrance-podcast.net/podcast09/rss_16538.xml'],
       #['','https://www.arteradio.com/xml_sound_emission?emissionname=%22SEX%20AND%20SOUNDS%22'],
       #['','https://www.arteradio.com/xml_sound_serie?seriename=%22La%20petite%20g%C3%A2terie%20de%20l%27%C3%A9volution%22'],
       #['','https://www.arteradio.com/xml_sound_serie?seriename=%22MON%20PRINCE%20%20VIENDRA%20A%20LA%20MER%22'],
       #['','https://www.arteradio.com/xml_sound_serie?seriename=%22CENT%20FA%C3%87ONS%20DE%20DISPARA%C3%8ETRE%22'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_11550.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_16740.xml'],
-      ['','https://www.outilsdumanager.com/feed/podcasts/'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_16274.xml'],
+      ['Grand atelier','http://radiofrance-podcast.net/podcast09/rss_11550.xml'],
+      ['Matins samedi','http://radiofrance-podcast.net/podcast09/rss_16740.xml'],
+      ['Outils manager','https://www.outilsdumanager.com/feed/podcasts/'],
+      #['Matiere penser','http://radiofrance-podcast.net/podcast09/rss_16274.xml'],
       #['a la hussarde',  'http://radiofrance-podcast.net/podcast09/rss_18938.xml'],
       #['femme puissante',  'http://radiofrance-podcast.net/podcast09/rss_20102.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_12440.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_13940.xml'],
-      ['','http://radiofrance-podcast.net/podcast09/rss_18292.xml'],
-      ['','https://radiofrance-podcast.net/podcast09/rss_20015.xml'],
-      ['','https://feed.podbean.com/dissidentofficiel/feed.xml'],
-      ['','https://www.rtl.fr/podcast/ca-va-beaucoup-mieux.xml'],
-      ['','https://radiofrance-podcast.net/podcast09/rss_14726.xml'],
-      ['','https://feed.ausha.co/oLj1PHZx8QPW'],
-      ['','https://radiofrance-podcast.net/podcast09/rss_13954.xml'],
-      ['','https://radiofrance-podcast.net/podcast09/rss_10239.xml'],
-      ['','https://www.europe1.fr/rss/podcasts/la-voix-est-livre.xml']
+      ['Debat de midi','http://radiofrance-podcast.net/podcast09/rss_12440.xml'],
+      ['Affaires sensibles','http://radiofrance-podcast.net/podcast09/rss_13940.xml'],
+      ['Conclusion Bellanger','http://radiofrance-podcast.net/podcast09/rss_18292.xml'],
+      ['Livres et vous','https://radiofrance-podcast.net/podcast09/rss_20015.xml'],
+      ['Face info Zemmour','https://feed.podbean.com/dissidentofficiel/feed.xml'],
+      ['Cymes','https://www.rtl.fr/podcast/ca-va-beaucoup-mieux.xml'],
+      ['Rdv X','https://radiofrance-podcast.net/podcast09/rss_14726.xml'],
+      ['Pausitive','https://feed.ausha.co/oLj1PHZx8QPW'],
+      ['Temps qui courent','https://radiofrance-podcast.net/podcast09/rss_13954.xml'],
+      ['Invite 8h20','https://radiofrance-podcast.net/podcast09/rss_10239.xml'],
+      ['Voix livre','https://www.europe1.fr/rss/podcasts/la-voix-est-livre.xml']
 
       ]
 content=[]
@@ -96,8 +96,9 @@ def documentInfo(url) :
     root=tree.getroot()
     el=tree.iter(tag='channel').next()
     title=el.find('title').text.encode('ascii',errors='replace')
+    #print("--->" + title)
     link=el.find('link').text.encode('utf-8')
-    return(title + ':' + link)
+    return(title.lstrip() + ':' + link)
 
 #----------------------------------------------------------------
 def url2file(url) :
@@ -113,7 +114,7 @@ def documentsInfo(filter) :
     if re.search(filter,text) is None :
       continue
     #print("{:3} {:<60.60} {}".format(str(i),documentInfo(urls[i]),urls[i]))
-    print("{:3} {:<80.80} {}".format(str(i),documentInfo(urls[i][1]),urls[i][1]))
+    print("{:3} {:<20.20} {:<80.80} {}".format(str(i),urls[i][0],documentInfo(urls[i][1]),urls[i][1]))
 
 #----------------------------------------------------------------
 def cached(file) :
