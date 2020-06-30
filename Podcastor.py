@@ -95,7 +95,7 @@ def documentInfo(url) :
     tree = ET.ElementTree(file=open(cached(url2file(url))))
     root=tree.getroot()
     el=tree.iter(tag='channel').next()
-    title=el.find('title').text.encode('utf-8')
+    title=el.find('title').text.encode('ascii',errors='replace')
     link=el.find('link').text.encode('utf-8')
     return(title + ':' + link)
 
@@ -113,7 +113,7 @@ def documentsInfo(filter) :
     if re.search(filter,text) is None :
       continue
     #print("{:3} {:<60.60} {}".format(str(i),documentInfo(urls[i]),urls[i]))
-    print("{:3} {:<60.60} {}".format(str(i),documentInfo(urls[i][1]),urls[i][1]))
+    print("{:3} {:<80.80} {}".format(str(i),documentInfo(urls[i][1]),urls[i][1]))
 
 #----------------------------------------------------------------
 def cached(file) :
@@ -175,7 +175,9 @@ def rss(url,filter,prefix,download) :
     file=prefix + '_' + sPart + '.mp3'
     #content.append('{:<16.16} {:<100.100} wget -O {:s} {:s}'.format(pubDate,text, file, mp3 ))
     #content.append('{:<16.16} {:_<100.100} wget -O {:s} {:s}'.format(pubDate,text.decode('utf8').encode('utf8',errors='replace'), file, mp3 ))
-    content.append('{:<16.16} {:_<80.80} {:s}'.format(pubDate,text.decode('utf8').encode('utf8',errors='replace'), mp3 ))
+    #textNorm=unicode(text.decode('utf8').encode('utf8',errors='replace').encode("utf-8")[:80], "utf-8", errors="ignore")
+    textNorm=text.decode('utf8').encode('ascii',errors='replace')
+    content.append('{:<16.16} {:_<80.80} {:s}'.format(pubDate,textNorm, mp3 ))
 
     if download :
       cmd='/usr/bin/wget -O ' + file + ' ' + mp3
@@ -201,7 +203,7 @@ def fCache(args=None) :
    
 #----------------------------------------------------------------
 def fScan(args) :
-  url=urls[int(args.item)]
+  url=urls[int(args.item)][1]
   filter='.*'
   if args.filter :
     filter=args.filter[0]
