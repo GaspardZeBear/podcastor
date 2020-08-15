@@ -63,7 +63,8 @@ urls=[['A voix nue','http://radiofrance-podcast.net/podcast09/rss_10351.xml'],
       #['','https://www.arteradio.com/xml_sound_serie?seriename=%22CENT%20FA%C3%87ONS%20DE%20DISPARA%C3%8ETRE%22'],
       ['Grand atelier','http://radiofrance-podcast.net/podcast09/rss_11550.xml'],
       ['Matins samedi','http://radiofrance-podcast.net/podcast09/rss_16740.xml'],
-      ['Outils manager','https://www.outilsdumanager.com/feed/podcasts/'],
+      #['Outils manager','https://www.outilsdumanager.com/feed/podcasts/'],
+      ['Outils manager','https://managertools.libsyn.com/rss'],
       #['Matiere penser','http://radiofrance-podcast.net/podcast09/rss_16274.xml'],
       #['a la hussarde',  'http://radiofrance-podcast.net/podcast09/rss_18938.xml'],
       #['femme puissante',  'http://radiofrance-podcast.net/podcast09/rss_20102.xml'],
@@ -77,7 +78,12 @@ urls=[['A voix nue','http://radiofrance-podcast.net/podcast09/rss_10351.xml'],
       ['Pausitive','https://feed.ausha.co/oLj1PHZx8QPW'],
       ['Temps qui courent','https://radiofrance-podcast.net/podcast09/rss_13954.xml'],
       ['Invite 8h20','https://radiofrance-podcast.net/podcast09/rss_10239.xml'],
-      ['Voix livre','https://www.europe1.fr/rss/podcasts/la-voix-est-livre.xml']
+      ['Voix livre','https://www.europe1.fr/rss/podcasts/la-voix-est-livre.xml'],
+      ['Concerts Rock','https://radiofrance-podcast.net/podcast09/rss_14322.xml'],
+      ['Signe temps','https://radiofrance-podcast.net/podcast09/rss_19489.xml'],
+      ['Langue bien pendue','https://feed.ausha.co/odr9DcvXjXRd'],
+      ['Parler comme jamais','https://rss.acast.com/parler-comme-jamais'],
+      ['Ete comme jamais','https://radiofrance-podcast.net/podcast09/rss_21203.xml'],
 
       ]
 content=[]
@@ -108,16 +114,20 @@ def url2file(url) :
     return(file)
 
 #----------------------------------------------------------------
-def documentsInfo(filter) :
+def documentsInfo(filter,args) :
   for i in range(0,len(urls)) :
     text=documentInfo(urls[i][1])
     if re.search(filter,text) is None :
       continue
     #print("{:3} {:<60.60} {}".format(str(i),documentInfo(urls[i]),urls[i]))
-    print("{:3} {:<20.20} {:<80.80} {}".format(str(i),urls[i][0],documentInfo(urls[i][1]),urls[i][1]))
+    if args.url :
+      print("{:3} {:<20.20} {:<80.80} {}".format( str(i), urls[i][0], documentInfo(urls[i][1]), urls[i][1]))
+    else :
+      print("{:3} {:<20.20} {}".format( str(i), urls[i][0], documentInfo(urls[i][1]).strip() )) 
 
 #----------------------------------------------------------------
 def cached(file) :
+    print("cache/" + file)
     return("cache/" + file)
     
 #----------------------------------------------------------------
@@ -181,7 +191,7 @@ def rss(url,filter,prefix,download) :
     content.append('{:<16.16} {:_<80.80} {:s}'.format(pubDate,textNorm, mp3 ))
 
     if download :
-      cmd='/usr/bin/wget -O ' + file + ' ' + mp3
+      cmd='/usr/bin/wget --no-check-certificate -O ' + file + ' ' + mp3
       print(cmd)
       os.system("nohup " + cmd + "> /dev/null 2>&1 &")
   for item in reversed(content) :
@@ -192,7 +202,7 @@ def fList(args=None) :
   filter='.*'
   if args.filter :
     filter=args.filter[0]
-  documentsInfo(filter)
+  documentsInfo(filter,args)
 
 #----------------------------------------------------------------
 def fCache(args=None) :
@@ -220,6 +230,7 @@ subparsers = parser.add_subparsers(help='sub-command help')
 parserList = subparsers.add_parser('list', help='a help')
 parserList.set_defaults(func=fList)
 parserList.add_argument('--filter','-f',nargs=1,help="filter for scan")
+parserList.add_argument('--url','-u',help="show url",default=False,action="store_true")
 
 
 parserCache = subparsers.add_parser('cache', help='a help')
@@ -232,6 +243,7 @@ parserScan.add_argument('item',nargs='?',help="item to scan (given by list)")
 parserScan.add_argument('--filter','-f',nargs=1,help="filter for scan")
 parserScan.add_argument('--prefix','-p',nargs=1,help="prefix for filename")
 parserScan.add_argument('--download','-d',help="download",action="store_true")
+parserScan.add_argument('--url','-u',help="show url",default=False,action="store_true")
 
 args=parser.parse_args()
 args.func(args)
