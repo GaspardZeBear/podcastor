@@ -84,6 +84,10 @@ urls=[['A voix nue','http://radiofrance-podcast.net/podcast09/rss_10351.xml'],
       ['Langue bien pendue','https://feed.ausha.co/odr9DcvXjXRd'],
       ['Parler comme jamais','https://rss.acast.com/parler-comme-jamais'],
       ['Ete comme jamais','https://radiofrance-podcast.net/podcast09/rss_21203.xml'],
+      ['Erner Culture','https://radiofrance-podcast.net/podcast09/rss_13983.xml'],
+      ['Avoir raison','https://radiofrance-podcast.net/podcast09/rss_17362.xml'],
+      ['De gaulle','https://radiofrance-podcast.net/podcast09/rss_21217.xml'],
+      ['le quart d\'heure','https://radiofrance-podcast.net/podcast09/rss_21745.xml'],
 
       ]
 content=[]
