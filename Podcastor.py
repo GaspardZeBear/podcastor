@@ -147,7 +147,10 @@ def fScan(args) :
 
 with open('URLS.json') as f :
   datas=json.load(f)
-urls=datas["urls"]
+urls=[]
+for url in datas["urls"] :
+  if not url[0].startswith("#") :
+    urls.append(url)
 
 parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers(help='sub-command help')
