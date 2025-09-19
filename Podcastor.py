@@ -134,9 +134,12 @@ def fCache(args=None) :
    
 #----------------------------------------------------------------
 def fScan(args) :
-  url=args.item
   if args.item.isnumeric() :
     url=urls[int(args.item)][1]
+  else :
+    url=args.item
+    documentCache(url)
+  logging.warning(url)
   filter='.*'
   if args.filter :
     filter=args.filter[0]
