@@ -100,38 +100,14 @@ def getNum(text) :
     part=re.search('\d+/\d+',text)
   return part
 
-
-#----------------------------------------------------------------
-def XdocumentInfo(url) :
-    #tree = ET.ElementTree(file=urllib2.urlopen(url))
-    xmlFile=cached(url2file(url))
-    logging.warning(xmlFile)
-    tree = ET.ElementTree(file=open(cached(url2file(url))))
-    root=tree.getroot()
-    logging.warning(root)
-    el=tree.iter(tag='channel').next()
-    title=el.find('title').text.encode('ascii',errors='replace')
-    #print("--->" + title)
-    link=el.find('link').text.encode('utf-8')
-    return(title.lstrip() + ':' + link)
-
 #----------------------------------------------------------------
 def documentInfo(url) :
-    #tree = ET.ElementTree(file=urllib2.urlopen(url))
-    #xmlFile=cached(url2file(url))
-    #logging.warning(xmlFile)
     tree = ET.ElementTree(file=open(cached(url2file(url)),'rb'))
     root=tree.getroot()
     logging.debug(root)
-    #el=tree.iter(tag='channel').next()
     el=root.find('channel')
-    #title=el.find('title').text.encode('ascii',errors='replace')
-    #title=el.find('title').text.encode('utf-8',errors='replace')
     title=el.find('title').text
     logging.debug(f'{title=}')
-    #sTitle=title.decode('utf-8')
-    #logging.warning(f'{sTitle=}')
-    #link=el.find('link').text.encode('utf-8')
     link=el.find('link').text
     logging.debug(f'{link=}')
     return(title.lstrip() + ':' + link)
@@ -139,7 +115,6 @@ def documentInfo(url) :
 #----------------------------------------------------------------
 def url2file(url) :
     file=url
-    #file=re.sub(':','_',url)
     file=re.sub('\/','@',file)
     return(file)
 
@@ -151,7 +126,6 @@ def documentsInfo(filter,args) :
     text=documentInfo(urls[i][1])
     if re.search(filter,text) is None :
       continue
-    #print("{:3} {:<60.60} {}".format(str(i),documentInfo(urls[i]),urls[i]))
     if args.url :
       print("{:3} {:<20.20} {:<80.80} {}".format( str(i), urls[i][0], documentInfo(urls[i][1]), urls[i][1]))
     else :
@@ -163,53 +137,37 @@ def cached(file) :
     return("cache/" + file)
     
 #----------------------------------------------------------------
-def XdocumentCache(url) :
-  print("Loading file " + url)
-  file=urllib2.urlopen(url)
-  print("Caching file " + url)
-  with open(cached(url2file(url)),'w') as out : 
-    out.write(file.read())
-    
-#----------------------------------------------------------------
 def documentCache(url) :
   print("Loading file " + url)
   r=requests.get(url)
   print("Caching file " + url)
-  #print(r.content)
   with open(cached(url2file(url)),'wb') as out : 
     out.write(r.content)
 
 #----------------------------------------------------------------
 def documentsCache() :
-  #for i in range(1,len(urls)-1) :
   for i in range(0,len(urls)) :
     print("Prepare caching file " + urls[i][1] + " " + str(i+1) + "/" + str(len(urls)))
     documentCache(urls[i][1])
 
 #----------------------------------------------------------------
-def rss(url,filter,prefix,download) :
-  #tree = ET.ElementTree(file=urllib2.urlopen(url))
+def rss(url,urllen,txtlen,filter,prefix,download) :
   tree = ET.ElementTree(file=open(cached(url2file(url))))
   root=tree.getroot()
   count=0
   for el in tree.iter(tag='item') :
-    #text=el.find('title').text.encode('utf-8')
     text=el.find('title').text
     if re.search(filter,text) is None :
       continue
     count += 1
-  #count=0
   print(documentInfo(url))
   for el in tree.iter(tag='item') :
-    #text=el.find('title').text.encode('utf-8')
     text=el.find('title').text
-    #pubDate=el.find('pubDate').text.encode('utf-8')
     pubDate=el.find('pubDate').text
     mp3=el.find('enclosure').attrib['url']
     if re.search(filter,text) is None :
       continue
     part=getNum(text)
-    #sPart=str(count)
     sPart='{:02d}'.format(count)
     if part :
       sPart=part.group()
@@ -219,13 +177,9 @@ def rss(url,filter,prefix,download) :
     else :
       count -= 1
     file=prefix + '_' + sPart + '.mp3'
-    #content.append('{:<16.16} {:<100.100} wget -O {:s} {:s}'.format(pubDate,text, file, mp3 ))
-    #content.append('{:<16.16} {:_<100.100} wget -O {:s} {:s}'.format(pubDate,text.decode('utf8').encode('utf8',errors='replace'), file, mp3 ))
-    #textNorm=unicode(text.decode('utf8').encode('utf8',errors='replace').encode("utf-8")[:80], "utf-8", errors="ignore")
-    #textNorm=text.decode('utf8').encode('ascii',errors='replace')
-    textNorm=text.encode('ascii',errors='replace')
-    #content.append('{:<16.16} {:_<80.80} {:s}'.format(pubDate,textNorm, mp3 ))
-    content.append(f'{pubDate:<16.16} {textNorm.decode("utf-8"):_<60.60} {mp3}')
+    textNorm=text.encode('ascii',errors='replace')[0:txtlen]
+    len=f'_<{txtlen}.{txtlen}'
+    content.append(f'{pubDate:<16.16} {textNorm.decode("utf-8"):{len}} {mp3[0:urllen]}')
 
     if download :
       cmd='/usr/bin/wget --no-check-certificate -O ' + file + ' ' + mp3
@@ -259,11 +213,16 @@ def fScan(args) :
   prefix='podcast'
   if args.prefix :
     prefix=args.prefix[0]
-  rss(url,filter,prefix,args.download) 
+  rss(url,int(args.urllen),int(args.txtlen),filter,prefix,args.download) 
   
 #----------------------------------------------------------------
 parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers(help='sub-command help')
+parser.add_argument('-v', '--verbose',
+                    action='count',
+                    dest='verbose',
+                    default=0,
+                    help="verbose output (repeat for increased verbosity)")
 
 parserList = subparsers.add_parser('list', help='a help')
 parserList.set_defaults(func=fList)
@@ -280,8 +239,14 @@ parserScan.set_defaults(func=fScan)
 parserScan.add_argument('item',nargs='?',help="item to scan (given by list)")
 parserScan.add_argument('--filter','-f',nargs=1,help="filter for scan")
 parserScan.add_argument('--prefix','-p',nargs=1,help="prefix for filename")
+parserScan.add_argument('--txtlen','-t',default="120",help="txt len on display")
+parserScan.add_argument('--urllen','-l',default="30",help="url len on display")
 parserScan.add_argument('--download','-d',help="download",action="store_true")
 parserScan.add_argument('--url','-u',help="show url",default=False,action="store_true")
-
 args=parser.parse_args()
+
+loglevels=[logging.ERROR,logging.WARNING,logging.INFO,logging.DEBUG,1]
+loglevel=loglevels[args.verbose] if args.verbose < len(loglevels) else loglevels[len(loglevels) - 1]
+logging.basicConfig(stream=sys.stdout,format="%(asctime)s %(module)s %(name)s  %(funcName)s %(lineno)s %(levelname)s %(message)s", level=loglevel)
+
 args.func(args)
