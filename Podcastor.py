@@ -6,6 +6,7 @@ import sys
 import os
 import argparse
 import requests
+import logging
 
 urls=[['A voix nue','http://radiofrance-podcast.net/podcast09/rss_10351.xml'],
       ['Vie d\'artiste','http://radiofrance-podcast.net/podcast09/rss_14486.xml'],
@@ -99,15 +100,40 @@ def getNum(text) :
     part=re.search('\d+/\d+',text)
   return part
 
+
 #----------------------------------------------------------------
-def documentInfo(url) :
+def XdocumentInfo(url) :
     #tree = ET.ElementTree(file=urllib2.urlopen(url))
+    xmlFile=cached(url2file(url))
+    logging.warning(xmlFile)
     tree = ET.ElementTree(file=open(cached(url2file(url))))
     root=tree.getroot()
+    logging.warning(root)
     el=tree.iter(tag='channel').next()
     title=el.find('title').text.encode('ascii',errors='replace')
     #print("--->" + title)
     link=el.find('link').text.encode('utf-8')
+    return(title.lstrip() + ':' + link)
+
+#----------------------------------------------------------------
+def documentInfo(url) :
+    #tree = ET.ElementTree(file=urllib2.urlopen(url))
+    #xmlFile=cached(url2file(url))
+    #logging.warning(xmlFile)
+    tree = ET.ElementTree(file=open(cached(url2file(url)),'rb'))
+    root=tree.getroot()
+    logging.debug(root)
+    #el=tree.iter(tag='channel').next()
+    el=root.find('channel')
+    #title=el.find('title').text.encode('ascii',errors='replace')
+    #title=el.find('title').text.encode('utf-8',errors='replace')
+    title=el.find('title').text
+    logging.debug(f'{title=}')
+    #sTitle=title.decode('utf-8')
+    #logging.warning(f'{sTitle=}')
+    #link=el.find('link').text.encode('utf-8')
+    link=el.find('link').text
+    logging.debug(f'{link=}')
     return(title.lstrip() + ':' + link)
 
 #----------------------------------------------------------------
@@ -119,7 +145,9 @@ def url2file(url) :
 
 #----------------------------------------------------------------
 def documentsInfo(filter,args) :
+  logging.debug("documentsInfo(filter,args)")
   for i in range(0,len(urls)) :
+    logging.debug(f'{i=} {urls[i]=}')
     text=documentInfo(urls[i][1])
     if re.search(filter,text) is None :
       continue
@@ -131,7 +159,7 @@ def documentsInfo(filter,args) :
 
 #----------------------------------------------------------------
 def cached(file) :
-    print("cache/" + file)
+    logging.debug("cache/" + file)
     return("cache/" + file)
     
 #----------------------------------------------------------------
@@ -165,15 +193,18 @@ def rss(url,filter,prefix,download) :
   root=tree.getroot()
   count=0
   for el in tree.iter(tag='item') :
-    text=el.find('title').text.encode('utf-8')
+    #text=el.find('title').text.encode('utf-8')
+    text=el.find('title').text
     if re.search(filter,text) is None :
       continue
     count += 1
   #count=0
   print(documentInfo(url))
   for el in tree.iter(tag='item') :
-    text=el.find('title').text.encode('utf-8')
-    pubDate=el.find('pubDate').text.encode('utf-8')
+    #text=el.find('title').text.encode('utf-8')
+    text=el.find('title').text
+    #pubDate=el.find('pubDate').text.encode('utf-8')
+    pubDate=el.find('pubDate').text
     mp3=el.find('enclosure').attrib['url']
     if re.search(filter,text) is None :
       continue
@@ -191,8 +222,10 @@ def rss(url,filter,prefix,download) :
     #content.append('{:<16.16} {:<100.100} wget -O {:s} {:s}'.format(pubDate,text, file, mp3 ))
     #content.append('{:<16.16} {:_<100.100} wget -O {:s} {:s}'.format(pubDate,text.decode('utf8').encode('utf8',errors='replace'), file, mp3 ))
     #textNorm=unicode(text.decode('utf8').encode('utf8',errors='replace').encode("utf-8")[:80], "utf-8", errors="ignore")
-    textNorm=text.decode('utf8').encode('ascii',errors='replace')
-    content.append('{:<16.16} {:_<80.80} {:s}'.format(pubDate,textNorm, mp3 ))
+    #textNorm=text.decode('utf8').encode('ascii',errors='replace')
+    textNorm=text.encode('ascii',errors='replace')
+    #content.append('{:<16.16} {:_<80.80} {:s}'.format(pubDate,textNorm, mp3 ))
+    content.append(f'{pubDate:<16.16} {textNorm.decode("utf-8"):_<60.60} {mp3}')
 
     if download :
       cmd='/usr/bin/wget --no-check-certificate -O ' + file + ' ' + mp3
@@ -203,6 +236,7 @@ def rss(url,filter,prefix,download) :
 
 #----------------------------------------------------------------
 def fList(args=None) :
+  logging.warning("flist")
   filter='.*'
   if args.filter :
     filter=args.filter[0]
