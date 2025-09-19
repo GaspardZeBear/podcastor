@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import xml.etree.cElementTree as ET
-import urllib2
+import urllib.request
 import re
 import sys
 import os
@@ -148,7 +148,7 @@ def documentCache(url) :
   r=requests.get(url)
   print("Caching file " + url)
   #print(r.content)
-  with open(cached(url2file(url)),'w') as out : 
+  with open(cached(url2file(url)),'wb') as out : 
     out.write(r.content)
 
 #----------------------------------------------------------------
