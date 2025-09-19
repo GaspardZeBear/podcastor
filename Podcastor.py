@@ -6,91 +6,9 @@ import sys
 import os
 import argparse
 import requests
+import json
 import logging
 
-urls=[['A voix nue','http://radiofrance-podcast.net/podcast09/rss_10351.xml'],
-      ['Vie d\'artiste','http://radiofrance-podcast.net/podcast09/rss_14486.xml'],
-      ['Le feuilleton','http://radiofrance-podcast.net/podcast09/rss_11495.xml'],
-      #['','http://cdn1-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/qui-vive.xml'],
-      ['MasquePlume','http://radiofrance-podcast.net/podcast09/rss_14007.xml'],
-      ['CheminPhilo','http://radiofrance-podcast.net/podcast09/rss_10467.xml'],
-      ['College France','http://radiofrance-podcast.net/podcast09/rss_11921.xml'],
-      #['','http://www.rtl.fr/podcast/100-live.xml'],
-      ['Pieds sur terre','http://radiofrance-podcast.net/podcast09/rss_10078.xml'],
-      ['Serie doc','http://radiofrance-podcast.net/podcast09/rss_10177.xml'],
-      ['Grande table','http://radiofrance-podcast.net/podcast09/rss_12360.xml'],
-      #[ 'boomerang', 'http://radiofrance-podcast.net/podcast09/rss_13937.xml'],
-      ['Grand bien','http://radiofrance-podcast.net/podcast09/rss_16173.xml'],
-      ['Repliques','http://radiofrance-podcast.net/podcast09/rss_13397.xml'],
-      #['','http://www.bbc.co.uk/programmes/p02pc9zn/episodes/downloads.rss'],
-      #['','http://www.bbc.co.uk/programmes/b006qy05/episodes/downloads.rss'],
-      ['Temps qui courent','http://radiofrance-podcast.net/podcast09/rss_13954.xml'],
-      ['Matiere a penser','http://radiofrance-podcast.net/podcast09/rss_16274.xml'],
-      #['','http://radiofrance-podcast.net/podcast09/rss_13957.xml'],
-      ['Grand reportage','http://radiofrance-podcast.net/podcast09/rss_10084.xml'],
-      #['methode scientifique',  'http://radiofrance-podcast.net/podcast09/rss_14312.xml'],
-      #['soft power ', 'http://radiofrance-podcast.net/podcast09/rss_10183.xml'],
-      ['Masterclasse','http://radiofrance-podcast.net/podcast09/rss_17360.xml'],
-      #['','http://radiofrance-podcast.net/podcast09/rss_17417.xml'],
-      ['Temps du debat','http://radiofrance-podcast.net/podcast09/rss_10175.xml'],
-      #['','http://cdn2-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/mediapolis.xml'],
-      ['Esprit public','http://radiofrance-podcast.net/podcast09/rss_16119.xml'],
-      ['Invite matin','http://radiofrance-podcast.net/podcast09/rss_13983.xml'],
-      ['Entendez-vous l\'eco','http://radiofrance-podcast.net/podcast09/rss_10081.xml'],
-      ['Temps ecrivains','http://radiofrance-podcast.net/podcast09/rss_13956.xml'],
-      #[ 'bande originale', 'http://radiofrance-podcast.net/podcast09/rss_13939.xml'],
-      ['Histoire particuliere','http://radiofrance-podcast.net/podcast09/rss_16408.xml'],
-      ['Actu idees','http://radiofrance-podcast.net/podcast09/rss_18755.xml'],
-      ['Culture direct','http://radiofrance-podcast.net/podcast09/rss_18723.xml'],
-      ['Culture monde','http://radiofrance-podcast.net/podcast09/rss_11701.xml'],
-      ['Nuit France culture','http://radiofrance-podcast.net/podcast09/rss_13915.xml'],
-       #['','http://radiofrance-podcast.net/podcast09/rss_18148.xml'],
-      ['Superfail','http://radiofrance-podcast.net/podcast09/rss_18064.xml'],
-      ['Idees claires','http://radiofrance-podcast.net/podcast09/rss_18918.xml'],
-      ['Compagnie oeuvres','http://radiofrance-podcast.net/podcast09/rss_15537.xml'],
-      ['Toute une vie','http://radiofrance-podcast.net/podcast09/rss_10471.xml'],
-      #['','http://radiofrance-podcast.net/podcast09/rss_12526.xml'],
-      #['','http://cdn1-europe1.new2.ladmedia.fr/var/exports/podcasts/sound/chapelle-sixties.xml'],
-      #['','http://radiofrance-podcast.net/podcast09/rss_19056.xml'],
-      #['','http://radiofrance-podcast.net/podcast09/rss_18938.xml'],
-      #['','http://podcasts.files.bbci.co.uk/b006qy05.rss'],
-      ['Remede melancolie','http://radiofrance-podcast.net/podcast09/rss_13022.xml'],
-      #['','http://radiofrance-podcast.net/podcast09/rss_10081.xml'],
-      #['','http://radiofrance-podcast.net/podcast09/rss_19918.xml'],
-      ['Christophe Andre','http://radiofrance-podcast.net/podcast09/rss_16538.xml'],
-      #['','https://www.arteradio.com/xml_sound_emission?emissionname=%22SEX%20AND%20SOUNDS%22'],
-      #['','https://www.arteradio.com/xml_sound_serie?seriename=%22La%20petite%20g%C3%A2terie%20de%20l%27%C3%A9volution%22'],
-      #['','https://www.arteradio.com/xml_sound_serie?seriename=%22MON%20PRINCE%20%20VIENDRA%20A%20LA%20MER%22'],
-      #['','https://www.arteradio.com/xml_sound_serie?seriename=%22CENT%20FA%C3%87ONS%20DE%20DISPARA%C3%8ETRE%22'],
-      ['Grand atelier','http://radiofrance-podcast.net/podcast09/rss_11550.xml'],
-      ['Matins samedi','http://radiofrance-podcast.net/podcast09/rss_16740.xml'],
-      #['Outils manager','https://www.outilsdumanager.com/feed/podcasts/'],
-      ['Outils manager','https://managertools.libsyn.com/rss'],
-      #['Matiere penser','http://radiofrance-podcast.net/podcast09/rss_16274.xml'],
-      #['a la hussarde',  'http://radiofrance-podcast.net/podcast09/rss_18938.xml'],
-      #['femme puissante',  'http://radiofrance-podcast.net/podcast09/rss_20102.xml'],
-      ['Debat de midi','http://radiofrance-podcast.net/podcast09/rss_12440.xml'],
-      ['Affaires sensibles','http://radiofrance-podcast.net/podcast09/rss_13940.xml'],
-      ['Conclusion Bellanger','http://radiofrance-podcast.net/podcast09/rss_18292.xml'],
-      ['Livres et vous','https://radiofrance-podcast.net/podcast09/rss_20015.xml'],
-      ['Face info Zemmour','https://feed.podbean.com/dissidentofficiel/feed.xml'],
-      ['Cymes','https://www.rtl.fr/podcast/ca-va-beaucoup-mieux.xml'],
-      ['Rdv X','https://radiofrance-podcast.net/podcast09/rss_14726.xml'],
-      ['Pausitive','https://feed.ausha.co/oLj1PHZx8QPW'],
-      ['Temps qui courent','https://radiofrance-podcast.net/podcast09/rss_13954.xml'],
-      ['Invite 8h20','https://radiofrance-podcast.net/podcast09/rss_10239.xml'],
-      ['Voix livre','https://www.europe1.fr/rss/podcasts/la-voix-est-livre.xml'],
-      ['Concerts Rock','https://radiofrance-podcast.net/podcast09/rss_14322.xml'],
-      ['Signe temps','https://radiofrance-podcast.net/podcast09/rss_19489.xml'],
-      ['Langue bien pendue','https://feed.ausha.co/odr9DcvXjXRd'],
-      ['Parler comme jamais','https://rss.acast.com/parler-comme-jamais'],
-      ['Ete comme jamais','https://radiofrance-podcast.net/podcast09/rss_21203.xml'],
-      ['Erner Culture','https://radiofrance-podcast.net/podcast09/rss_13983.xml'],
-      ['Avoir raison','https://radiofrance-podcast.net/podcast09/rss_17362.xml'],
-      ['De gaulle','https://radiofrance-podcast.net/podcast09/rss_21217.xml'],
-      ['le quart d\'heure','https://radiofrance-podcast.net/podcast09/rss_21745.xml'],
-
-      ]
 content=[]
             
 #----------------------------------------------------------------
@@ -102,7 +20,11 @@ def getNum(text) :
 
 #----------------------------------------------------------------
 def documentInfo(url) :
-    tree = ET.ElementTree(file=open(cached(url2file(url)),'rb'))
+    try :
+      tree = ET.ElementTree(file=open(cached(url2file(url)),'rb'))
+    except :
+      logging.warning(f'Error cache file {cached(url2file(url))}')
+      raise
     root=tree.getroot()
     logging.debug(root)
     el=root.find('channel')
@@ -123,13 +45,16 @@ def documentsInfo(filter,args) :
   logging.debug("documentsInfo(filter,args)")
   for i in range(0,len(urls)) :
     logging.debug(f'{i=} {urls[i]=}')
-    text=documentInfo(urls[i][1])
-    if re.search(filter,text) is None :
-      continue
-    if args.url :
-      print("{:3} {:<20.20} {:<80.80} {}".format( str(i), urls[i][0], documentInfo(urls[i][1]), urls[i][1]))
-    else :
-      print("{:3} {:<20.20} {}".format( str(i), urls[i][0], documentInfo(urls[i][1]).strip() )) 
+    try :
+      text=documentInfo(urls[i][1])
+      if re.search(filter,text) is None :
+        continue
+      if args.url :
+        print("{:3} {:<20.20} {:<80.80} {}".format( str(i), urls[i][0], documentInfo(urls[i][1]), urls[i][1]))
+      else :
+        print("{:3} {:<20.20} {}".format( str(i), urls[i][0], documentInfo(urls[i][1]).strip() ))
+    except :
+      logging.warning(f'Error cache file {urls[i]=}')
 
 #----------------------------------------------------------------
 def cached(file) :
@@ -139,10 +64,13 @@ def cached(file) :
 #----------------------------------------------------------------
 def documentCache(url) :
   print("Loading file " + url)
-  r=requests.get(url)
-  print("Caching file " + url)
-  with open(cached(url2file(url)),'wb') as out : 
-    out.write(r.content)
+  try :
+    r=requests.get(url)
+    print("Caching file " + url)
+    with open(cached(url2file(url)),'wb') as out : 
+      out.write(r.content)
+  except :
+    logging.warning("Error")
 
 #----------------------------------------------------------------
 def documentsCache() :
@@ -216,6 +144,11 @@ def fScan(args) :
   rss(url,int(args.urllen),int(args.txtlen),filter,prefix,args.download) 
   
 #----------------------------------------------------------------
+
+with open('URLS.json') as f :
+  datas=json.load(f)
+urls=datas["urls"]
+
 parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers(help='sub-command help')
 parser.add_argument('-v', '--verbose',
