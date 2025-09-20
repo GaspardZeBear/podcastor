@@ -93,6 +93,7 @@ def rss(url,urllen,txtlen,filter,prefix,download) :
     text=el.find('title').text
     pubDate=el.find('pubDate').text
     mp3=el.find('enclosure').attrib['url']
+    size=el.find('enclosure').attrib['length']
     if re.search(filter,text) is None :
       continue
     part=getNum(text)
@@ -107,7 +108,7 @@ def rss(url,urllen,txtlen,filter,prefix,download) :
     file=prefix + '_' + sPart + '.mp3'
     textNorm=text.encode('ascii',errors='replace')[0:txtlen]
     len=f'_<{txtlen}.{txtlen}'
-    content.append(f'{pubDate:<16.16} {textNorm.decode("utf-8"):{len}} {mp3[0:urllen]}')
+    content.append(f'{pubDate:<16.16} {int(size)/1024:8.0f} {textNorm.decode("utf-8"):{len}} {mp3[0:urllen]}')
 
     if download :
       cmd='/usr/bin/wget --no-check-certificate -O ' + file + ' ' + mp3
