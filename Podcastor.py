@@ -18,10 +18,15 @@ class TRACE:
 def trace(func) :
   def wrapper(*args,**kwargs):
     TRACE.depth+= 1
-    logging.info(f'*{"-"*TRACE.depth}> trace entering {func.__name__} {args=}  {kwargs=}')
-    result=func(*args,**kwargs)
-    logging.info(f'*{"-"*TRACE.depth}> leaving {func.__name__} {result=}')
-    TRACE.depth-= 1
+    logging.info(f'*{"-"*TRACE.depth}> [trace] entering {func.__name__}() {args=}  {kwargs=}')
+    result=None
+    try :
+      result=func(*args,**kwargs)
+    except Exception as e :
+      logging.info(f'*{"-"*TRACE.depth}> [trace] exception when calling  {func.__name__}() {result=}')
+    finally :
+      logging.info(f'*{"-"*TRACE.depth}> [trace] leaving {func.__name__}() {result=}')
+      TRACE.depth-= 1
     return(result)
   return(wrapper)
             
@@ -52,6 +57,7 @@ def documentInfo(url) :
   return(title.lstrip() + ':' + link)
 
 #----------------------------------------------------------------
+@trace
 def url2file(url) :
     file=url
     file=re.sub('\/','@',file)
@@ -75,11 +81,13 @@ def documentsInfo(filter,args) :
       logging.warning(f'Error cache file {urls[i]=} {e}')
 
 #----------------------------------------------------------------
+@trace
 def cached(file) :
     logging.debug("cache/" + file)
     return("cache/" + file)
     
 #----------------------------------------------------------------
+@trace
 def documentCache(url) :
   print("Loading file " + url)
   try :
@@ -91,12 +99,14 @@ def documentCache(url) :
     logging.warning("Error")
 
 #----------------------------------------------------------------
+@trace
 def documentsCache() :
   for i in range(0,len(urls)) :
     print("Prepare caching file " + urls[i][1] + " " + str(i+1) + "/" + str(len(urls)))
     documentCache(urls[i][1])
 
 #----------------------------------------------------------------
+@trace
 def rss(url,urllen,txtlen,filter,prefix,download) :
   tree = ET.ElementTree(file=open(cached(url2file(url))))
   root=tree.getroot()
@@ -145,6 +155,7 @@ def fList(args=None) :
   documentsInfo(filter,args)
 
 #----------------------------------------------------------------
+@trace
 def fCache(args=None) :
   if args.num :
     for n in args.num.split(',') :
@@ -153,6 +164,7 @@ def fCache(args=None) :
     documentsCache()
    
 #----------------------------------------------------------------
+@trace
 def fScan(args) :
   if args.item.isnumeric() :
     url=urls[int(args.item)][1]
