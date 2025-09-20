@@ -10,6 +10,20 @@ import json
 import logging
 
 content=[]
+
+#----------------------------------------------------------------
+class TRACE:
+  depth=0
+#----------------------------------------------------------------
+def trace(func) :
+  def wrapper(*args,**kwargs):
+    TRACE.depth+= 1
+    logging.info(f'*{"-"*TRACE.depth}> trace entering {func.__name__} {args=}  {kwargs=}')
+    result=func(*args,**kwargs)
+    logging.info(f'*{"-"*TRACE.depth}> leaving {func.__name__} {result=}')
+    TRACE.depth-= 1
+    return(result)
+  return(wrapper)
             
 #----------------------------------------------------------------
 def getNum(text) :
@@ -19,20 +33,23 @@ def getNum(text) :
   return part
 
 #----------------------------------------------------------------
+@trace
 def documentInfo(url) :
-    try :
-      tree = ET.ElementTree(file=open(cached(url2file(url)),'rb'))
-    except :
-      logging.warning(f'Error cache file {cached(url2file(url))}')
-      raise
-    root=tree.getroot()
-    logging.debug(root)
-    el=root.find('channel')
-    title=el.find('title').text
-    logging.debug(f'{title=}')
-    link=el.find('link').text
-    logging.debug(f'{link=}')
-    return(title.lstrip() + ':' + link)
+  cachedFile=cached(url2file(url))
+  logging.debug(f'{cachedFile=}')
+  try :
+    tree = ET.ElementTree(file=open(cached(url2file(url)),'rb'))
+  except Exception as e :
+    logging.warning(f'Error cache file {cached(url2file(url))} : {e}')
+    raise
+  root=tree.getroot()
+  logging.debug(root)
+  el=root.find('channel')
+  title=el.find('title').text
+  logging.debug(f'{title=}')
+  link=el.find('link').text
+  logging.debug(f'{link=}')
+  return(title.lstrip() + ':' + link)
 
 #----------------------------------------------------------------
 def url2file(url) :
@@ -41,20 +58,21 @@ def url2file(url) :
     return(file)
 
 #----------------------------------------------------------------
+@trace
 def documentsInfo(filter,args) :
-  logging.debug("documentsInfo(filter,args)")
   for i in range(0,len(urls)) :
     logging.debug(f'{i=} {urls[i]=}')
     try :
       text=documentInfo(urls[i][1])
+      logging.debug(f'{text=}')
       if re.search(filter,text) is None :
         continue
       if args.url :
         print("{:3} {:<20.20} {:<80.80} {}".format( str(i), urls[i][0], documentInfo(urls[i][1]), urls[i][1]))
       else :
         print("{:3} {:<20.20} {}".format( str(i), urls[i][0], documentInfo(urls[i][1]).strip() ))
-    except :
-      logging.warning(f'Error cache file {urls[i]=}')
+    except Exception as e :
+      logging.warning(f'Error cache file {urls[i]=} {e}')
 
 #----------------------------------------------------------------
 def cached(file) :
@@ -118,6 +136,7 @@ def rss(url,urllen,txtlen,filter,prefix,download) :
     print(item)
 
 #----------------------------------------------------------------
+@trace
 def fList(args=None) :
   logging.warning("flist")
   filter='.*'
